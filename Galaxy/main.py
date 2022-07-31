@@ -6,15 +6,21 @@ from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Line 
 
 class MainWidget(Widget):
+    # Perspective points
     perspective_point_x = NumericProperty(0)
     perspective_point_y = NumericProperty(0)
+    # Vertical Line properties
     V_NB_LINES = 6
     V_LINES_SPACING = .1
     vertical_lines = []
-    line = None
+    # Horizontal Line properties
+    H_NB_LINES = 6
+    H_LINES_SPACING = .2
+    horizontal_lines = []
 
     def __init__(self, **kwargs):
         super(MainWidget , self).__init__(**kwargs)
+        self.init_horizontal_lines()
         self.init_vertical_lines()
         #print('Init func ',self.width , self.height)
 
@@ -25,11 +31,11 @@ class MainWidget(Widget):
         pass
     # Called when size is changed
     def on_size(self, widget , parent):
-        
+        self.update_horizontal_line()
         self.update_vertical_line()
         print('Size func ',self.width , self.height)
        
-       # COmmeting out cause doing in galaxy.kv file
+       # Commenting out cause doing in galaxy.kv file
       # self.perspective_point_x = self.width/2
       # self.perspective_point_y = self.height * 0.75
 
@@ -50,22 +56,45 @@ class MainWidget(Widget):
 
             for i in range(0,self.V_NB_LINES):
                 self.vertical_lines.append(Line())
-
+     # Is called in the on_size
     def update_vertical_line(self):
         center_x = self.width//2
-        offset = -int(self.V_NB_LINES/2)
+        offset = -int(self.V_NB_LINES/2) + 0.5
         
         spacing = self.V_LINES_SPACING * self.width
-        i = 0
-        while i < self.V_NB_LINES:
-            if offset == 0:
-                offset += 1
-              
-                continue
+     
+        for i in range(0,self.V_NB_LINES) :
             linex = int(center_x + offset * spacing)
             x1 , y1 = self.transform(linex , 0)
             x2 , y2 = self.transform(linex , self.height)
             self.vertical_lines[i].points = [x1,y1,x2,y2]
+            #self.vertical_lines[i].points = [self.perspective_point_x ,self.perspective_point_y , linex , 0]
+            offset += 1
+           
+
+    # Is called in the __init__
+    def init_horizontal_lines(self):
+        with self.canvas:
+           
+            Color(1,1,1)
+
+            for i in range(0,self.V_NB_LINES):
+                self.horizontal_lines.append(Line())
+    # Is called in the on_size
+    def update_horizontal_line(self):
+        center_x = self.width//2
+        offset = -int(self.V_NB_LINES/2)  + 0.5
+        spacing = self.V_LINES_SPACING * self.width
+
+        x_min = center_x + offset*spacing
+        x_max = center_x - offset*spacing
+        spacing_y = self.H_LINES_SPACING * self.height
+        i = 0
+        while i < self.V_NB_LINES:
+            liney = i * spacing_y
+            x1 , y1 = self.transform(x_min , liney)
+            x2 , y2 = self.transform(x_max , liney)
+            self.horizontal_lines[i].points = [x1,y1,x2,y2]
             #self.vertical_lines[i].points = [self.perspective_point_x ,self.perspective_point_y , linex , 0]
             offset += 1
             i += 1
