@@ -1,3 +1,4 @@
+from turtle import position
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty
@@ -7,7 +8,7 @@ from kivy.graphics.vertex_instructions import Line
 class MainWidget(Widget):
     perspective_point_x = NumericProperty(0)
     perspective_point_y = NumericProperty(0)
-    V_NB_LINES = 7
+    V_NB_LINES = 6
     V_LINES_SPACING = .1
     vertical_lines = []
     line = None
@@ -24,6 +25,7 @@ class MainWidget(Widget):
         pass
     # Called when size is changed
     def on_size(self, widget , parent):
+        
         self.update_vertical_line()
         print('Size func ',self.width , self.height)
        
@@ -43,21 +45,30 @@ class MainWidget(Widget):
     # Is called in the __init__
     def init_vertical_lines(self):
         with self.canvas:
+           
             Color(1,1,1)
+
             for i in range(0,self.V_NB_LINES):
                 self.vertical_lines.append(Line())
 
     def update_vertical_line(self):
         center_x = self.width//2
         offset = -int(self.V_NB_LINES/2)
+        
         spacing = self.V_LINES_SPACING * self.width
-        for i in range(0,self.V_NB_LINES):
+        i = 0
+        while i < self.V_NB_LINES:
+            if offset == 0:
+                offset += 1
+              
+                continue
             linex = int(center_x + offset * spacing)
             x1 , y1 = self.transform(linex , 0)
             x2 , y2 = self.transform(linex , self.height)
             self.vertical_lines[i].points = [x1,y1,x2,y2]
             #self.vertical_lines[i].points = [self.perspective_point_x ,self.perspective_point_y , linex , 0]
             offset += 1
+            i += 1
 
     def transform(self, x , y):
         #return self.transform_2D(x,y)
