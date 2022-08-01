@@ -21,12 +21,21 @@ class MainWidget(Widget):
     perspective_point_x = NumericProperty(0)
     perspective_point_y = NumericProperty(0)
     # Vertical Line properties
+<<<<<<< HEAD
     V_NB_LINES = 20
     V_LINES_SPACING = .1
     vertical_lines = []
     # Horizontal Line properties
     H_NB_LINES = 6
     H_LINES_SPACING = .2
+=======
+    V_NB_LINES = 16
+    V_LINES_SPACING = .25
+    vertical_lines = []
+    # Horizontal Line properties
+    H_NB_LINES = 60
+    H_LINES_SPACING = .1
+>>>>>>> Master
     horizontal_lines = []
 
     def __init__(self, **kwargs):
@@ -131,7 +140,7 @@ class MainWidget(Widget):
         diff_x = x- self.perspective_point_x
         diff_y = self.perspective_point_y - tr_y
         prop_y =  diff_y/self.perspective_point_y
-        prop_y  *= prop_y
+        prop_y  = prop_y**4
         tr_y = self.perspective_point_y - prop_y * self.perspective_point_y
         tr_x = self.perspective_point_x + diff_x * prop_y
         return int(tr_x),int(tr_y)
