@@ -21,21 +21,12 @@ class MainWidget(Widget):
     perspective_point_x = NumericProperty(0)
     perspective_point_y = NumericProperty(0)
     # Vertical Line properties
-<<<<<<< HEAD
-    V_NB_LINES = 20
-    V_LINES_SPACING = .1
-    vertical_lines = []
-    # Horizontal Line properties
-    H_NB_LINES = 6
-    H_LINES_SPACING = .2
-=======
     V_NB_LINES = 16
     V_LINES_SPACING = .25
     vertical_lines = []
     # Horizontal Line properties
     H_NB_LINES = 60
     H_LINES_SPACING = .1
->>>>>>> Master
     horizontal_lines = []
 
     def __init__(self, **kwargs):
