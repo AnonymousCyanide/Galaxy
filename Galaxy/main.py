@@ -1,20 +1,24 @@
 from turtle import position
 from kivy.app import App
 from kivy.uix.widget import Widget
-from kivy.properties import NumericProperty
+from kivy.properties import NumericProperty , Clock
 from kivy.graphics.context_instructions import Color 
 from kivy.graphics.vertex_instructions import Line 
 
+
 class MainWidget(Widget):
+    # Gloabal offsests to be changed by update 60 times a sec
+    current_offset_y = 0
+    SPEED = 4
     # Perspective points
     perspective_point_x = NumericProperty(0)
     perspective_point_y = NumericProperty(0)
     # Vertical Line properties
-    V_NB_LINES = 6
+    V_NB_LINES = 10
     V_LINES_SPACING = .1
     vertical_lines = []
     # Horizontal Line properties
-    H_NB_LINES = 60
+    H_NB_LINES = 6
     H_LINES_SPACING = .2
     horizontal_lines = []
 
@@ -22,6 +26,7 @@ class MainWidget(Widget):
         super(MainWidget , self).__init__(**kwargs)
         self.init_horizontal_lines()
         self.init_vertical_lines()
+        Clock.schedule_interval(self.update , 1/60)
         #print('Init func ',self.width , self.height)
 
 
@@ -31,9 +36,7 @@ class MainWidget(Widget):
         pass
     # Called when size is changed
     def on_size(self, widget , parent):
-        self.update_horizontal_line()
-        self.update_vertical_line()
-        print('Size func ',self.width , self.height)
+        pass
        
        # Commenting out cause doing in galaxy.kv file
       # self.perspective_point_x = self.width/2
@@ -91,7 +94,7 @@ class MainWidget(Widget):
         spacing_y = self.H_LINES_SPACING * self.height
         i = 0
         while i < self.V_NB_LINES:
-            liney = i * spacing_y
+            liney = i * spacing_y - self.current_offset_y
             x1 , y1 = self.transform(x_min , liney)
             x2 , y2 = self.transform(x_max , liney)
             self.horizontal_lines[i].points = [x1,y1,x2,y2]
@@ -117,7 +120,14 @@ class MainWidget(Widget):
         tr_y = self.perspective_point_y - prop_y * self.perspective_point_y
         tr_x = self.perspective_point_x + diff_x * prop_y
         return int(tr_x),int(tr_y)
-
+    def update(self,dt):
+        self.current_offset_y += self.SPEED
+        spacing_y = self.H_LINES_SPACING * self.height
+        if self.current_offset_y >= spacing_y:
+            self.current_offset_y -= spacing_y
+        self.update_horizontal_line()
+        self.update_vertical_line()
+        
 
 class GalaxyApp(App):
     pass
