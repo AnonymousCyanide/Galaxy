@@ -7,6 +7,7 @@ from kivy.properties import NumericProperty , Clock
 from kivy.graphics.context_instructions import Color 
 from kivy.graphics.vertex_instructions import Line 
 from kivy.core.window import Window
+from kivy.utils import platform
 
 
 class MainWidget(Widget):
@@ -31,12 +32,16 @@ class MainWidget(Widget):
     def __init__(self, **kwargs):
         super(MainWidget , self).__init__(**kwargs)
         self.init_horizontal_lines()
-        self.init_vertical_lines()
-        
-        self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self._on_keyboard_down , on_key_up = self._on_keyboard_up)
+        self.init_vertical_lines() 
+        if self.is_desktop():
+            self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
+            self._keyboard.bind(on_key_down=self._on_keyboard_down , on_key_up = self._on_keyboard_up)
         Clock.schedule_interval(self.update , 1/60)
-
+    def is_desktop(self):
+        print(platform)
+        if platform in ['linux','windows','macos','win']:
+            return True
+        return False
     
 
 
