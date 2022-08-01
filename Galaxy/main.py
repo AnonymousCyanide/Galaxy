@@ -10,11 +10,13 @@ class MainWidget(Widget):
     # Gloabal offsests to be changed by update 60 times a sec
     current_offset_y = 0
     SPEED = 4
+    SPEEDX = 1
+    current_offset_x = 0
     # Perspective points
     perspective_point_x = NumericProperty(0)
     perspective_point_y = NumericProperty(0)
     # Vertical Line properties
-    V_NB_LINES = 10
+    V_NB_LINES = 20
     V_LINES_SPACING = .1
     vertical_lines = []
     # Horizontal Line properties
@@ -67,7 +69,7 @@ class MainWidget(Widget):
         spacing = self.V_LINES_SPACING * self.width
      
         for i in range(0,self.V_NB_LINES) :
-            linex = int(center_x + offset * spacing)
+            linex = int(center_x + offset * spacing) + self.current_offset_x
             x1 , y1 = self.transform(linex , 0)
             x2 , y2 = self.transform(linex , self.height)
             self.vertical_lines[i].points = [x1,y1,x2,y2]
@@ -89,8 +91,8 @@ class MainWidget(Widget):
         offset = -int(self.V_NB_LINES/2)  + 0.5
         spacing = self.V_LINES_SPACING * self.width
 
-        x_min = center_x + offset*spacing
-        x_max = center_x - offset*spacing
+        x_min = center_x + offset*spacing + self.current_offset_x
+        x_max = center_x - offset*spacing + self.current_offset_x
         spacing_y = self.H_LINES_SPACING * self.height
         i = 0
         while i < self.V_NB_LINES:
@@ -124,13 +126,16 @@ class MainWidget(Widget):
 
     def update(self,dt):
         time_factor = dt*60
-        self.current_offset_y += self.SPEED * time_factor
+        # Update Y
+        self.current_offset_y += self.SPEED * time_factor   
         spacing_y = self.H_LINES_SPACING * self.height
         if self.current_offset_y >= spacing_y:
-            self.current_offset_y -= spacing_y
+            self.current_offset_y -= spacing_y       
+        # Update X
+        self.current_offset_x += self.SPEEDX * time_factor
+
         self.update_horizontal_line()
         self.update_vertical_line()
-        
 
 class GalaxyApp(App):
     pass
