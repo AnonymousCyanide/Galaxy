@@ -1,9 +1,12 @@
-from turtle import position
+from kivy.config import Config
+Config.set('graphics', 'width', '900')
+Config.set('graphics', 'height', '400')
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty , Clock
 from kivy.graphics.context_instructions import Color 
 from kivy.graphics.vertex_instructions import Line 
+
 
 
 class MainWidget(Widget):
@@ -12,6 +15,7 @@ class MainWidget(Widget):
     SPEED = 4
     SPEEDX = 1
     current_offset_x = 0
+    dir = 0
     # Perspective points
     perspective_point_x = NumericProperty(0)
     perspective_point_y = NumericProperty(0)
@@ -122,7 +126,16 @@ class MainWidget(Widget):
         tr_y = self.perspective_point_y - prop_y * self.perspective_point_y
         tr_x = self.perspective_point_x + diff_x * prop_y
         return int(tr_x),int(tr_y)
-
+    # Game running code
+    def on_touch_down(self, touch):
+        if touch.x < self.width//2:
+            self.dir = 1
+        else :
+            self.dir = -1
+    
+    def on_touch_up(self, touch):
+        self.dir = 0
+        
 
     def update(self,dt):
         time_factor = dt*60
@@ -132,7 +145,8 @@ class MainWidget(Widget):
         if self.current_offset_y >= spacing_y:
             self.current_offset_y -= spacing_y       
         # Update X
-        self.current_offset_x += self.SPEEDX * time_factor
+        self.current_offset_x += self.SPEEDX * time_factor * self.dir
+
 
         self.update_horizontal_line()
         self.update_vertical_line()
