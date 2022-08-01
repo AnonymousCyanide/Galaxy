@@ -6,14 +6,14 @@ from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty , Clock
 from kivy.graphics.context_instructions import Color 
 from kivy.graphics.vertex_instructions import Line 
-
+from kivy.core.window import Window
 
 
 class MainWidget(Widget):
     # Gloabal offsests to be changed by update 60 times a sec
     current_offset_y = 0
     SPEED = 4
-    SPEEDX = 1
+    SPEEDX = 10
     current_offset_x = 0
     dir = 0
     # Perspective points
@@ -32,8 +32,12 @@ class MainWidget(Widget):
         super(MainWidget , self).__init__(**kwargs)
         self.init_horizontal_lines()
         self.init_vertical_lines()
+        
+        self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self._on_keyboard_down , on_key_up = self._on_keyboard_up)
         Clock.schedule_interval(self.update , 1/60)
-        #print('Init func ',self.width , self.height)
+
+    
 
 
     # Called when widget is attached to the Main app
@@ -150,6 +154,19 @@ class MainWidget(Widget):
 
         self.update_horizontal_line()
         self.update_vertical_line()
+    def _keyboard_closed(self):
+        self._keyboard.unbind(on_key_down=self._on_keyboard_down,on_key_up = self._on_keyboard_up)
+        self._keyboard = None
+
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        if keycode[1] == 'left':
+            self.dir = 1
+        elif keycode[1] == 'right':
+            self.dir = -1
+        
+        return True
+    def _on_keyboard_up(self, keyboard, keycode):
+        self.dir = 0
 
 class GalaxyApp(App):
     pass
