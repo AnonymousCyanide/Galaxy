@@ -120,8 +120,11 @@ class MainWidget(Widget):
         tr_y = self.perspective_point_y - prop_y * self.perspective_point_y
         tr_x = self.perspective_point_x + diff_x * prop_y
         return int(tr_x),int(tr_y)
+
+
     def update(self,dt):
-        self.current_offset_y += self.SPEED
+        time_factor = dt*60
+        self.current_offset_y += self.SPEED * time_factor
         spacing_y = self.H_LINES_SPACING * self.height
         if self.current_offset_y >= spacing_y:
             self.current_offset_y -= spacing_y
